@@ -91,14 +91,20 @@ export class ReadinessProbe {
   async check(force: boolean = false): Promise<ReadinessSnapshot> {
     const now = Date.now();
 
-    if (!force && this.lastSnapshot && now - this.lastSnapshot.timestamp < this.cacheTtlMs) {
+    if (
+      !force &&
+      this.lastSnapshot &&
+      now - this.lastSnapshot.timestamp < this.cacheTtlMs
+    ) {
       return {
         ...this.lastSnapshot,
         cached: true,
       };
     }
 
-    const results = await Promise.all(this.targets.map((t) => this.probeTarget(t)));
+    const results = await Promise.all(
+      this.targets.map((t) => this.probeTarget(t)),
+    );
     const targetMap: Record<string, TargetHealth> = {};
     let allHealthy = true;
     let anyHealthy = false;

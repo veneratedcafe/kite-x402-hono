@@ -28,10 +28,13 @@ describe("readiness-probe", () => {
 
   test("handles unreachable target gracefully and reports DOWN/DEGRADED", async () => {
     const probe = new ReadinessProbe({ timeoutMs: 50 });
-    probe.addTarget({ name: "dead-target", url: "http://127.0.0.1:54321/nonexistent" });
+    probe.addTarget({
+      name: "dead-target",
+      url: "http://127.0.0.1:54321/nonexistent",
+    });
 
     const snap = await probe.check();
     expect(snap.status).toBe("DOWN");
-    expect(snap.targets["dead-target"].healthy).toBe(false);
+    expect(snap.targets["dead-target"]?.healthy).toBe(false);
   });
 });
